@@ -4,6 +4,7 @@
     export let senderName: string;
     export let senderImg: string;
     export let description: string;
+    export let mainImg: string;
 </script>
 
 <div class="border border-black">
@@ -17,7 +18,7 @@
 
     <!-- Main image -->
     <div class="aspect-square w-full">
-
+        <img class="h-full w-full" src={mainImg[0]} alt="TODO" />
     </div>
 
     <!-- Reaction buttons -->

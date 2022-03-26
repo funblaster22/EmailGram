@@ -71,25 +71,49 @@ export function getHeader(headers, index) {
 
 export function getBody(message) {
     let encodedBody = '';
-    if(typeof message.parts === 'undefined') {
+    if (message.parts === undefined) {
         encodedBody = message.body.data;
     } else {
-        encodedBody = getHTMLPart(message.parts);
+        // TODO: replace getPart function
+        encodedBody = getPart(message.parts, "text/html").data;
     }
     encodedBody = encodedBody.replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '');
     return decodeURIComponent(escape(window.atob(encodedBody)));
 }
 
-export function getHTMLPart(arr) {
-    for (let x=0; x<=arr.length; x++) {
-        if(typeof arr[x].parts === 'undefined') {
-            if(arr[x].mimeType === 'text/html') {
-                return arr[x].body.data;
+// I HATE THIS FUNCTION
+function getPart(parts, MIMEtype: string) {
+    for (const part of parts) {
+        console.log(part);
+        if (part.parts === undefined) {
+            console.log("Nothing else")
+            console.log(part.mimeType);
+            if (part.mimeType === MIMEtype) {
+                console.log("FOUND", part);
+                return part.body;
             }
         } else {
-            return getHTMLPart(arr[x].parts);
+            console.log("Recursion", part.parts);
+            return getPart(part.parts, MIMEtype);
         }
     }
+    console.log("nothing found");
     return '';
 }
 // endregion
+
+/** Flatten object shaped like {key: [{key: [{things}]}, {key: [{things}]}]} */
+function flattenObj(object, key) {
+    let acc = [];
+    if (object[key] === undefined) return [object];
+    for (const part of object[key]) {
+        acc = [...acc, ...flattenObj(part, key)];
+    }
+    return acc;
+}
+
+export function getImgs(payload) {
+    // if (payload.parts === undefined) return;
+    // return getPart(payload.parts, "image/png");  // TODO: syntax like image/*
+    return flattenObj(payload, "parts").filter(part => part.mimeType.includes("image/"));
+}
