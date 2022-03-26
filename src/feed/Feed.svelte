@@ -2,39 +2,14 @@
 import Post from "./Post.svelte";
 import svelte from "../assets/svelte.png"
 import {getHeader} from "../lib/gapi";
-
-const clientId = '975670416072-iabafb9dtffjf2ipq4tqmfj4min62k17.apps.googleusercontent.com';
-const apiKey = 'AIzaSyDDWq6ZoZkDIVbhmkIYdRlg3Lapuhm1WrY';  // I think it is safe to commit this
-const scopes = 'https://www.googleapis.com/auth/gmail.readonly';
+import {handleAuthClick, handleSignoutClick, isSignedIn} from "../lib/gapi.ts";
 
 let messages = [];
 
-// Adapted from https://www.sitepoint.com/mastering-your-inbox-with-gmail-javascript-api/
-// TODO: Use https://developers.google.com/gmail/api/quickstart/js instead?
-gapi.client.setApiKey(apiKey);
-
-function handleAuthClick() {
-    gapi.auth.authorize({
-        client_id: clientId,
-        scope: scopes,
-        immediate: false
-    }, handleAuthResult);
-    return false;
-}
-handleAuthClick();
-
-function handleAuthResult(authResult: GoogleApiOAuth2TokenObject) {
-    if (authResult && !authResult.error) {
-        loadGmailApi();
-    } else {
-        console.log(authResult);
-        //handleAuthClick();
-    }
-}
-
-function loadGmailApi() {
-    gapi.client.load('gmail', 'v1', displayInbox);
-}
+isSignedIn.subscribe(isSignedIn => {
+    if (isSignedIn) displayInbox();
+    else messages = [];
+})
 
 function displayInbox() {
     const request = gapi.client.gmail.users.messages.list({
@@ -45,6 +20,7 @@ function displayInbox() {
     });
 
     request.execute(function(response) {
+        console.log(response);
         for (const msg of response.messages) {
             const messageRequest = gapi.client.gmail.users.messages.get({
                 'userId': 'me',
@@ -63,17 +39,22 @@ function unescape(string: string) {
 }
 
 function reformatMsg(obj) {
+    console.log(obj);
     messages = [...messages, {
         id: obj.id,
-        snippet: unescape(obj.snippet),
+        snippet: unescape(obj.snippet).trim(),
         senderName: getHeader(obj.payload.headers, "From"),
         date: new Date(obj.internalDate),
     }];
-    console.log(messages);
 }
 </script>
 
-<button on:click={handleAuthClick}>Authorize</button>
+{#if $isSignedIn}
+    <button on:click={handleSignoutClick}>Sign out</button>
+{:else}
+    <button on:click={handleAuthClick}>Sign in</button>
+{/if}
+
 {#each messages as message (message.id)}
     <Post senderName={message.senderName} senderImg={svelte} description={message.snippet} />
 {/each}
