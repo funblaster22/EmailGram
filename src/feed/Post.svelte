@@ -3,6 +3,7 @@
     import Spacer from "../lib/Spacer.svelte";
     export let senderName: string;
     export let senderImg: string;
+    export let description: string;
 </script>
 
 <div class="border border-black">
@@ -28,5 +29,5 @@
     </div>
 
     <!-- Description -->
-    <p>Description</p>
+    <p>{description}</p>
 </div>
