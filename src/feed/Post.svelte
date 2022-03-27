@@ -5,7 +5,7 @@
     export let senderImg: string;
     export let description: string;
     export let body: string;
-    export let mainImg: string;
+    export let mainImg: string[];
 </script>
 
 <div class="border border-black">

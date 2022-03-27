@@ -1,10 +1,19 @@
 <script lang="ts">
 import Post from "./Post.svelte";
 import svelte from "../assets/svelte.png"
-import {getBody, getHeader, getImgs, handleAuthClick, handleSignoutClick, isSignedIn} from "../lib/gapi.ts";
+import {getBody, getHeader, getImgs, handleAuthClick, handleSignoutClick, isSignedIn, fixBase64} from "../lib/gapi.ts";
 import InfiniteScroll from "../lib/InfiniteScroll.svelte";
 
-let messages = [];
+interface Post {
+    id: string,
+    snippet: string,
+    senderName: string,
+    date: Date,
+    body: string,
+    imgs: string[],
+}
+
+let messages: Post[] = [];
 let nextPageToken: string;
 
 isSignedIn.subscribe(isSignedIn => {
@@ -24,8 +33,8 @@ function displayInbox() {
     console.log("REQUEST", request);
 
     request.execute(function(response) {
-        nextPageToken = response.nextPageToken;
-        for (const msg of response.messages) {
+        nextPageToken = response.result.nextPageToken;
+        for (const msg of response.result.messages) {
             const messageRequest = gapi.client.gmail.users.messages.get({
                 'userId': 'me',
                 'id': msg.id,
@@ -59,21 +68,18 @@ function reformatMsg(obj) {
     const body = getBody(obj.payload);
     //console.log(body);
 
-    // TODO: better async implementation
+    // TODO: better async implementation & guarantee order
     Promise.all(getImgs(obj.payload).map(img =>
         // Docs: https://developers.google.com/gmail/api/reference/rest/v1/users.messages.attachments/get
         gapi.client.gmail.users.messages.attachments.get({
             userId: "me",
             messageId: obj.id,
             id: img.body.attachmentId,
-        }).getPromise().then(attachment => {
-            attachment.mime = img.mimeType
-            attachment.alt = img.filename;
-            return attachment;
-        })
+        }).then(attachment => (
+            {...attachment, mime: img.mimeType, alt: img.filename}
+        ))
     )).then(imgs => {
-        // TODO: function to fix google's base64 encoded strings
-        imgs = imgs.map(img => "data:" + img.mime + ";base64," + img.result.data.replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, ''))
+        let imgUrls = imgs.map(img => "data:" + img.mime + ";base64," + fixBase64(img.result.data))
         console.log(imgs);
         messages = [...messages, {
             id: obj.id,
@@ -81,7 +87,7 @@ function reformatMsg(obj) {
             senderName: getHeader(obj.payload.headers, "From"),
             date: new Date(obj.internalDate),
             body,
-            imgs,
+            imgs: imgUrls,
         }];
     });
 }

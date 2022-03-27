@@ -9,6 +9,7 @@ const {set: setIsSignedIn, subscribe} = writable(false);
 export const isSignedIn = {subscribe};
 
 // region Adapted from https://developers.google.com/gmail/api/quickstart/js
+// Docs: https://github.com/google/google-api-javascript-client
 /**
  *  On load, called to load the auth2 library and API client library.
  */
@@ -62,7 +63,7 @@ export function handleSignoutClick(event) {
 
 // BAD https://www.sitepoint.com/mastering-your-inbox-with-gmail-javascript-api/
 
-export function getHeader(headers, index) {
+export function getHeader(headers: gapi.client.gmail.MessagePartHeader[], index: string): string | undefined {
     for (const header of headers) {
         if (header.name === index) {
             return header.value;
@@ -70,16 +71,19 @@ export function getHeader(headers, index) {
     }
 }
 
-export function getBody(message) {
-    const encodedBody = flattenObj(message, "parts").filter(part => part.mimeType === "text/html")[0].body.data
-        .replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '');
-    return decodeURIComponent(escape(window.atob(encodedBody)));
+export function fixBase64(base64: string) {
+    return base64.replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '');
+}
+
+export function getBody(message: gapi.client.gmail.MessagePart) {
+    const encodedBody = flattenObj(message, "parts").filter(part => part.mimeType === "text/html")[0].body.data;
+    return decodeURIComponent(escape(window.atob(fixBase64(encodedBody))));
 }
 
 /** Flatten object shaped like {key: [{key: [{things}]}, {key: [{things}]}]}
  * @returns array that is guaranteed to have at least one item
  */
-function flattenObj<T extends {[Property in K]: Iterable<T>}, K extends string>(object: T, key: K): Omit<T, K>[] {
+function flattenObj<T extends {[Property in K]?: Iterable<T>}, K extends string>(object: T, key: K): Omit<T, K>[] {
     let acc: Omit<T, K>[] = [];
     if (object[key] === undefined) return [object];
     for (const part of object[key]) {
@@ -89,6 +93,6 @@ function flattenObj<T extends {[Property in K]: Iterable<T>}, K extends string>(
     return acc;
 }
 
-export function getImgs(payload) {
+export function getImgs(payload: gapi.client.gmail.MessagePart) {
     return flattenObj(payload, "parts").filter(part => part.mimeType.includes("image/"));
 }
