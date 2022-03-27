@@ -95,7 +95,7 @@ function reformatMsg(obj) {
     {/if}
 
     {#each messages as message (message.id)}
-        <Post senderName={message.senderName} senderImg={svelte} description={message.snippet} mainImg={message.imgs} />
+        <Post senderName={message.senderName} senderImg={svelte} description={message.snippet} mainImg={message.imgs} body={message.body} />
     {/each}
     <InfiniteScroll
             hasMore={true}

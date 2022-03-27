@@ -4,6 +4,7 @@
     export let senderName: string;
     export let senderImg: string;
     export let description: string;
+    export let body: string;
     export let mainImg: string;
 </script>
 
@@ -17,8 +18,12 @@
     </div>
 
     <!-- Main image -->
-    <div class="aspect-square w-full">
-        <img class="h-full w-full" src={mainImg[0]} alt="TODO" />
+    <div class="aspect-square w-full border border-red">
+        {#if mainImg[0]}
+            <img class="h-full w-full" src={mainImg[0]} alt="TODO" />
+        {:else}
+            <iframe class="h-full w-full overflow-hidden" srcdoc={body} scrolling="no" disabled></iframe>
+        {/if}
     </div>
 
     <!-- Reaction buttons -->
