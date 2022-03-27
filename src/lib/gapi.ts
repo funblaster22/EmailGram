@@ -60,7 +60,8 @@ export function handleSignoutClick(event) {
 }
 //endregion
 
-// region Adapted from https://www.sitepoint.com/mastering-your-inbox-with-gmail-javascript-api/
+// BAD https://www.sitepoint.com/mastering-your-inbox-with-gmail-javascript-api/
+
 export function getHeader(headers, index) {
     for (const header of headers) {
         if (header.name === index) {
@@ -70,50 +71,24 @@ export function getHeader(headers, index) {
 }
 
 export function getBody(message) {
-    let encodedBody = '';
-    if (message.parts === undefined) {
-        encodedBody = message.body.data;
-    } else {
-        // TODO: replace getPart function
-        encodedBody = getPart(message.parts, "text/html").data;
-    }
-    encodedBody = encodedBody.replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '');
+    const encodedBody = flattenObj(message, "parts").filter(part => part.mimeType === "text/html")[0].body.data
+        .replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '');
     return decodeURIComponent(escape(window.atob(encodedBody)));
 }
 
-// I HATE THIS FUNCTION
-function getPart(parts, MIMEtype: string) {
-    for (const part of parts) {
-        console.log(part);
-        if (part.parts === undefined) {
-            console.log("Nothing else")
-            console.log(part.mimeType);
-            if (part.mimeType === MIMEtype) {
-                console.log("FOUND", part);
-                return part.body;
-            }
-        } else {
-            console.log("Recursion", part.parts);
-            return getPart(part.parts, MIMEtype);
-        }
-    }
-    console.log("nothing found");
-    return '';
-}
-// endregion
-
-/** Flatten object shaped like {key: [{key: [{things}]}, {key: [{things}]}]} */
-function flattenObj(object, key) {
-    let acc = [];
+/** Flatten object shaped like {key: [{key: [{things}]}, {key: [{things}]}]}
+ * @returns array that is guaranteed to have at least one item
+ */
+function flattenObj<T extends {[Property in K]: Iterable<T>}, K extends string>(object: T, key: K): Omit<T, K>[] {
+    let acc: Omit<T, K>[] = [];
     if (object[key] === undefined) return [object];
     for (const part of object[key]) {
-        acc = [...acc, ...flattenObj(part, key)];
+        acc = acc.concat(flattenObj(part, key));
     }
+    console.log(acc);
     return acc;
 }
 
 export function getImgs(payload) {
-    // if (payload.parts === undefined) return;
-    // return getPart(payload.parts, "image/png");  // TODO: syntax like image/*
     return flattenObj(payload, "parts").filter(part => part.mimeType.includes("image/"));
 }
