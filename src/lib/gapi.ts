@@ -2,7 +2,7 @@ import {writable} from "svelte/store";
 
 const clientId = '975670416072-iabafb9dtffjf2ipq4tqmfj4min62k17.apps.googleusercontent.com';
 const apiKey = 'AIzaSyDDWq6ZoZkDIVbhmkIYdRlg3Lapuhm1WrY';  // I think it is safe to commit this
-const scopes = 'https://www.googleapis.com/auth/gmail.readonly';
+const scopes = ["https://www.googleapis.com/auth/gmail.modify"];
 const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];  // TODO: what does this do?
 
 const {set: setIsSignedIn, subscribe} = writable(false);
@@ -27,7 +27,7 @@ function initClient() {
         apiKey: apiKey,
         clientId: clientId,
         discoveryDocs: DISCOVERY_DOCS,
-        scope: scopes
+        scope: scopes.join(' '),
     }).then(function () {
         // Listen for sign-in state changes.
         gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);

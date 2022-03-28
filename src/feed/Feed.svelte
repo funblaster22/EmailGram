@@ -101,10 +101,10 @@ function reformatMsg(obj) {
     {/if}
 
     {#each messages as message (message.id)}
-        <Post senderName={message.senderName} senderImg={svelte} description={message.snippet} mainImg={message.imgs} body={message.body} />
+        <Post id={message.id} senderName={message.senderName} senderImg={svelte} description={message.snippet} mainImg={message.imgs} body={message.body} />
     {/each}
     <InfiniteScroll
             hasMore={true}
             threshold={100}
-            on:loadMore={displayInbox}/>
+            on:loadMore={displayInbox} />
 </div>
