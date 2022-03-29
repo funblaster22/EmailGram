@@ -1,4 +1,6 @@
 <script lang="ts">
+// TODO: Filter account security into account tab
+
 import Post from "./Post.svelte";
 import svelte from "../assets/svelte.png"
 import {getBody, getHeader, getImgs, handleAuthClick, handleSignoutClick, isSignedIn, fixBase64} from "../lib/gapi.ts";
@@ -94,6 +96,9 @@ function reformatMsg(obj) {
 </script>
 
 <div class="h-screen overflow-y-auto">
+    <!-- Shows all messages containing the word "unsubscribe". Also considering checking if 'reply-to' different from 'From', is not 'in:primary' or 'To:me AND -*'
+    Adapted from https://webapps.stackexchange.com/a/29916 -->
+    <input value="unsubscribe" placeholder="search query" />
     {#if $isSignedIn}
         <button on:click={handleSignoutClick}>Sign out</button>
     {:else}
