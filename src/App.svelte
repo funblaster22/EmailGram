@@ -5,6 +5,7 @@ import Messages from "./messenger/Messages.svelte";
 import Thread from "./messenger/Thread.svelte";
 import NavBar from "./lib/NavBar.svelte";
 import Spacer from "./lib/Spacer.svelte";
+import Account from "./account/Account.svelte";
 </script>
 
 <main class="max-w-lg h-screen mx-auto w-screen border border-black flex flex-col">
@@ -13,6 +14,8 @@ import Spacer from "./lib/Spacer.svelte";
       '/': Feed,
       '/message': Messages,
       '/message/:conversationId': Thread,
+      '/account': Account,
+      //'/user/:userId'
     }} />
   </div>
   <NavBar />

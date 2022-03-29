@@ -3,7 +3,7 @@
 
 import Post from "./Post.svelte";
 import svelte from "../assets/svelte.png"
-import {getBody, getHeader, getImgs, handleAuthClick, handleSignoutClick, isSignedIn, fixBase64} from "../lib/gapi.ts";
+import {getBody, getHeader, getImgs, isSignedIn, fixBase64} from "../lib/gapi.ts";
 import InfiniteScroll from "../lib/InfiniteScroll.svelte";
 
 interface Post {
@@ -28,7 +28,7 @@ function displayInbox() {
     const request = gapi.client.gmail.users.messages.list({
         userId: 'me',
         labelIds: 'INBOX',
-        maxResults: 20,
+        maxResults: 10,
         q: 'is:unread unsubscribe',
         pageToken: nextPageToken,
     });
@@ -99,11 +99,6 @@ function reformatMsg(obj) {
     <!-- Shows all messages containing the word "unsubscribe". Also considering checking if 'reply-to' different from 'From', is not 'in:primary' or 'To:me AND -*'
     Adapted from https://webapps.stackexchange.com/a/29916 -->
     <input value="unsubscribe" placeholder="search query" />
-    {#if $isSignedIn}
-        <button on:click={handleSignoutClick}>Sign out</button>
-    {:else}
-        <button on:click={handleAuthClick}>Sign in</button>
-    {/if}
 
     {#each messages as message (message.id)}
         <Post id={message.id} senderName={message.senderName} senderImg={svelte} description={message.snippet} mainImg={message.imgs} body={message.body} />
