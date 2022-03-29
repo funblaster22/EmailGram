@@ -95,7 +95,7 @@ function reformatMsg(obj) {
 }
 </script>
 
-<div class="h-screen overflow-y-auto">
+<div class="main h-screen overflow-y-auto">
     <!-- Shows all messages containing the word "unsubscribe". Also considering checking if 'reply-to' different from 'From', is not 'in:primary' or 'To:me AND -*'
     Adapted from https://webapps.stackexchange.com/a/29916 -->
     <input value="unsubscribe" placeholder="search query" />
@@ -113,3 +113,31 @@ function reformatMsg(obj) {
             threshold={100}
             on:loadMore={displayInbox} />
 </div>
+
+<style>
+    .main {
+        scrollbar-gutter: stable;
+        overflow-y: overlay;
+    }
+
+    /* width */
+    .main::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    /* Track * /
+    .main::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }*/
+
+    /* Handle */
+    .main::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 20%);
+        border-radius: 99999px;
+    }
+
+    /* Handle on hover */
+    .main::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 0, 0, 30%);
+    }
+</style>
