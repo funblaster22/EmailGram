@@ -3,7 +3,7 @@
 import ProfPic from "../lib/ProfPic.svelte";
 </script>
 
-<a href="#/message/10">
+<a href="#/messages/10">
     <div class="container">
         <div class="img"><ProfPic /></div>
         <div class="addr whitespace-nowrap overflow-ellipsis overflow-x-hidden mr-1">Ethan Dawes</div>

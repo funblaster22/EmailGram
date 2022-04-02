@@ -15,7 +15,7 @@ let expanded = false;
             <img src={home} alt="home icon" />
             <span>Feed</span>
         </a>
-        <a class="item" class:active={ $location === '/message' } href="#/message">
+        <a class="item" class:active={ $location === '/messages' } href="#/messages">
             <img src={chat}  alt="chat bubble icon" />
             <span>Messages</span>
         </a>

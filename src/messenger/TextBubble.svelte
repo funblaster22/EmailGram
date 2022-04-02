@@ -7,7 +7,6 @@ let emojiCount = (slot
     .match(/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/g) || [])
     .length;
 let allEmojis = emojiCount > 0 && emojiCount <= 3;
-console.log(emojiCount, allEmojis);
 </script>
 
 <!-- Don't ask why I have to define all the classes -->
