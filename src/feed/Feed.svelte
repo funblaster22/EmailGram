@@ -98,7 +98,6 @@ function reformatMsg(obj) {
 <div class="main h-screen overflow-y-auto">
     <!-- Shows all messages containing the word "unsubscribe". Also considering checking if 'reply-to' different from 'From', is not 'in:primary' or 'To:me AND -*'
     Adapted from https://webapps.stackexchange.com/a/29916 -->
-    <input value="unsubscribe" placeholder="search query" />
 
     {#each messages as message (message.id)}
         <Post id={message.id} senderName={message.senderName} senderImg={svelte} description={message.snippet} mainImg={message.imgs} body={message.body} />
