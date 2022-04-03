@@ -3,7 +3,8 @@
 import home from '../assets/home.svg';
 import chat from '../assets/chat.svg';
 import account from '../assets/account.svg';
-import {location} from 'svelte-spa-router';
+import {location, link} from 'svelte-spa-router';
+import active from 'svelte-spa-router/active';
 console.log($location);
 let vertical = false;
 let expanded = false;
@@ -11,15 +12,15 @@ let expanded = false;
 
 <div class={ "navigation " + (vertical ? "vert " : "hor ") + (expanded ? "expanded" : "compact") }>
     <div class="flex">
-        <a class="item" class:active={ $location === '/' } href="#/">
+        <a class="item" use:active use:link href="/feed">
             <img src={home} alt="home icon" />
             <span>Feed</span>
         </a>
-        <a class="item" class:active={ $location === '/messages' } href="#/messages">
+        <a class="item" use:active={new RegExp("/messages/?\w*")} use:link href="/messages">
             <img src={chat}  alt="chat bubble icon" />
             <span>Messages</span>
         </a>
-        <a class="item" class:active={ $location === '/account' } href="#/account">
+        <a class="item" use:active use:link href="/account">
             <img src={account} alt="account icon" />
             <span>Account</span>
         </a>
@@ -80,12 +81,12 @@ let expanded = false;
         margin-left: 1.25em;
         margin-right: 1.25em;
     }
-    .item.active { cursor: default; }
+    .item:global(.active) { cursor: default; }
     .item img { grid-area: icon; height: 1.5em; }
     .item span { grid-area: label; font-size: min(0.7em, 20vw * 0.45);  }
 
-    .flex:hover .item.active { transform: scale(100%); }
-    .item.active, .flex:hover .item:hover { transform: scale(113%); }
+    .flex:hover .item:global(.active) { transform: scale(100%); }
+    .item:global(.active), .flex:hover .item:hover { transform: scale(113%); }
 
     #backdrop {
         display: block;

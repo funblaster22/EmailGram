@@ -1,0 +1,1 @@
+TODO: if authenticated, redirect. Else show about page & link to accounts page
