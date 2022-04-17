@@ -1,12 +1,20 @@
 import {writable} from "svelte/store";
+import {Deferred} from "./lib";
 
 const clientId = '975670416072-iabafb9dtffjf2ipq4tqmfj4min62k17.apps.googleusercontent.com';
 const apiKey = 'AIzaSyDDWq6ZoZkDIVbhmkIYdRlg3Lapuhm1WrY';  // I think it is safe to commit this
 const scopes = ["https://www.googleapis.com/auth/gmail.modify"];
 const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];  // TODO: what does this do?
 
-const {set: setIsSignedIn, subscribe} = writable(false);
-export const isSignedIn = {subscribe};
+export interface User {
+    id: string,
+    fullName: string,
+    imageUrl: string,
+    email: string,
+}
+
+export const {set: setUser, subscribe: subscribeUser} = writable<User>(undefined);
+export const user = {subscribe: subscribeUser};
 
 // region Adapted from https://developers.google.com/gmail/api/quickstart/js
 // Docs: https://github.com/google/google-api-javascript-client
@@ -42,8 +50,17 @@ function initClient() {
  *  appropriately. After a sign-in, the API is called.
  */
 function updateSigninStatus(isSignedIn: boolean) {
-    setIsSignedIn(isSignedIn);
     console.log("SIGNED", isSignedIn ? "IN!" : "OUT!");
+    if (isSignedIn) {
+        const profile = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile();
+        setUser({
+            id: profile.getId(),
+            fullName: profile.getName(),
+            imageUrl: profile.getImageUrl(),
+            email: profile.getEmail(),
+        });
+    } else
+        setUser(undefined);
 }
 
 /**

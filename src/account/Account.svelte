@@ -1,8 +1,8 @@
 <script>
-import {isSignedIn, handleAuthClick, handleSignoutClick} from "../lib/gapi.ts";
+import {user, handleAuthClick, handleSignoutClick} from "../lib/gapi.ts";
 </script>
 
-{#if $isSignedIn}
+{#if $user}
     <button on:click={handleSignoutClick}>Sign out</button>
 {:else}
     <button on:click={handleAuthClick}>Sign in</button>

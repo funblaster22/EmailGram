@@ -3,7 +3,7 @@
 
 import Post from "./Post.svelte";
 import svelte from "../assets/svelte.png"
-import {getBody, getHeader, getImgs, isSignedIn, fixBase64} from "../lib/gapi.ts";
+import {getBody, getHeader, getImgs, user, fixBase64} from "../lib/gapi.ts";
 import InfiniteScroll from "../lib/InfiniteScroll.svelte";
 
 interface Post {
@@ -18,7 +18,7 @@ interface Post {
 let messages: Post[] = [];
 let nextPageToken: string;
 
-isSignedIn.subscribe(isSignedIn => {
+user.subscribe(isSignedIn => {
     if (isSignedIn) displayInbox();
     else messages = [];
 })
