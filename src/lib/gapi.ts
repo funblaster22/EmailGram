@@ -1,5 +1,5 @@
 import {writable} from "svelte/store";
-import {Deferred} from "./lib";
+import {flattenObj} from "./lib";
 
 const clientId = '975670416072-iabafb9dtffjf2ipq4tqmfj4min62k17.apps.googleusercontent.com';
 const apiKey = 'AIzaSyDDWq6ZoZkDIVbhmkIYdRlg3Lapuhm1WrY';  // I think it is safe to commit this
@@ -95,19 +95,6 @@ export function fixBase64(base64: string) {
 export function getBody(message: gapi.client.gmail.MessagePart) {
     const encodedBody = flattenObj(message, "parts").filter(part => part.mimeType === "text/html")[0].body.data;
     return decodeURIComponent(escape(window.atob(fixBase64(encodedBody))));
-}
-
-/** Flatten object shaped like {key: [{key: [{things}]}, {key: [{things}]}]}
- * @returns array that is guaranteed to have at least one item
- */
-function flattenObj<T extends {[Property in K]?: Iterable<T>}, K extends string>(object: T, key: K): Omit<T, K>[] {
-    let acc: Omit<T, K>[] = [];
-    if (object[key] === undefined) return [object];
-    for (const part of object[key]) {
-        acc = acc.concat(flattenObj(part, key));
-    }
-    console.log(acc);
-    return acc;
 }
 
 export function getImgs(payload: gapi.client.gmail.MessagePart) {

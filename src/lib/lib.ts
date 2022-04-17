@@ -36,3 +36,16 @@ export class Deferred<T> extends Promise<T> {
     //this.promise = purePromise;
   }
 }
+
+/** Flatten object shaped like {key: [{key: [{things}]}, {key: [{things}]}]}
+ * @returns array that is guaranteed to have at least one item
+ */
+export function flattenObj<T extends { [Property in K]?: Iterable<T> }, K extends string>(object: T, key: K): Omit<T, K>[] {
+  let acc: Omit<T, K>[] = [];
+  if (object[key] === undefined) return [object];
+  for (const part of object[key]) {
+    acc = acc.concat(flattenObj(part, key));
+  }
+  console.log(acc);
+  return acc;
+}
