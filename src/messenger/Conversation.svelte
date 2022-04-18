@@ -1,14 +1,26 @@
+<script context="module" lang="ts">
+  export interface ConversationData {
+    // The gmail ID of the newest message in conversation. This can change. Acts like head pointer of linked list
+    id: string;
+    // Date of the newest Message
+    date: Date;
+    participants: string[];
+    snippet: string;
+  }
+</script>
 <script lang="ts">
-
 import ProfPic from "../lib/ProfPic.svelte";
+import {relativeDate} from "../lib/lib";
+
+export let conversationData: ConversationData;
 </script>
 
-<a href="#/messages/10">
+<a href="#/messages/{conversationData.id}">
     <div class="container">
         <div class="img"><ProfPic /></div>
-        <div class="addr whitespace-nowrap overflow-ellipsis overflow-x-hidden mr-1">Ethan Dawes</div>
-        <div class="time">Yesterday, Monday &gt;</div>
-        <div class="snippet border-b border-gray-300 overflow-hidden">The quick brown fox jumped over the lazy dog</div>
+        <div class="addr whitespace-nowrap overflow-ellipsis overflow-x-hidden mr-1">{conversationData.participants.join(", ")}</div>
+        <div class="time">{relativeDate(conversationData.date)} &gt;</div>
+        <div class="snippet border-b border-gray-300 overflow-hidden">{conversationData.snippet}</div>
     </div>
 </a>
 

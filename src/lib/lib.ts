@@ -46,6 +46,17 @@ export function flattenObj<T extends { [Property in K]?: Iterable<T> }, K extend
   for (const part of object[key]) {
     acc = acc.concat(flattenObj(part, key));
   }
-  console.log(acc);
   return acc;
+}
+
+export function relativeDate(date: Date): string {
+  // TODO: account for time zones
+  const daysAgo = (date.getTime() - new Date().setUTCHours(0, 0, 0, 0)) / (1000 * 3600 * 24);
+  const formatted = new Intl.RelativeTimeFormat(undefined, {numeric: "auto"}).format(daysAgo, "days");
+  if (formatted.split(" ").length === 1)
+    return formatted;  // Case "yesterday", "today", "tomorrow", "antier" in spanish, etc
+  else if (Math.abs(daysAgo) < 7)
+    return date.toLocaleString(undefined, {  timeZone: "UTC", weekday: "long" });
+  else
+    return date.toLocaleDateString();
 }
