@@ -1,1 +1,0 @@
-import{S as o,i,s as r,t as c,a as u,n as a,d as l}from"./index.7c0ff3be.js";function p(s){let t;return{c(){t=c("TODO: if authenticated, redirect. Else show about page & link to accounts page")},m(e,n){u(e,t,n)},p:a,i:a,o:a,d(e){e&&l(t)}}}class f extends o{constructor(t){super(),i(this,t,null,p,r,{})}}export{f as default};
