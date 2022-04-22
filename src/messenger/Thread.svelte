@@ -21,15 +21,18 @@ function send(ev: SubmitEvent) {
 }
 </script>
 
-<div class="text-center border-b border-gray-300">
-    <img class="w-10 aspect-square mx-auto" src="#" alt="Profile picture" />
-    <small class="">Name</small>
-</div>
-<div class="imessage">
-    {#each messages as message (message.id)}
-        <TextBubble isMe={message.isMe} slot={message.body} />
-    {/each}
-    <Spacer />
+<div class="flex flex-col h-full">
+    <div class="text-center border-b border-gray-300">
+        <img class="w-10 aspect-square mx-auto" src="#" alt="Profile picture" />
+        <small class="">Name</small>
+    </div>
+    <div class="imessage">
+        <small class="text-center text-gray-400">Person joined the group!</small>
+        {#each messages as message (message.id)}
+            <TextBubble isMe={message.isMe} slot={message.body} />
+        {/each}
+        <small class="text-center text-gray-400">Person left the group :(</small>
+    </div>
     <form class="flex" on:submit|preventDefault={send}>
         <button type="button">➕</button>
         <button type="button">🖼️</button>
