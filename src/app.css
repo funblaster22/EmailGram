@@ -2,3 +2,34 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* width */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track * /
+.scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}*/
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 20%);
+    border-radius: 99999px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 30%);
+}
+
+/* Would be nice if these classes autocompleted, see https://github.com/tailwindlabs/tailwindcss-intellisense/issues/227 */
+@layer utilities {
+    /* TODO: is there a cleaner way? */
+    .overflow-y-auto {
+        scrollbar-gutter: stable;
+        overflow-y: overlay;
+    }
+}

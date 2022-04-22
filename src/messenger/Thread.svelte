@@ -55,5 +55,6 @@ function send(ev: SubmitEvent) {
         max-width: 600px;
         padding: 0.5rem 1.5rem;
         height: 100%;
+        overflow: auto;
     }
 </style>

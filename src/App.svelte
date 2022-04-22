@@ -6,7 +6,7 @@ import NavBar from "./lib/NavBar.svelte";
 
 <main class="max-w-lg h-screen mx-auto w-screen border border-black flex flex-col">
   {#if $location !== '/' }
-    <div class="flex-grow-[999] overflow-auto">
+    <div class="flex-grow-[999] overflow-y-auto"> <!-- Apparently overflow-y-auto also applies to all children -->
       <Router routes={{
         '/feed': wrap({asyncComponent: () => import("./feed/Feed.svelte")}),
         '/messages': wrap({asyncComponent: () => import("./messenger/Messages.svelte")}),
